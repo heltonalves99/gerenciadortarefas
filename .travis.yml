@@ -1,0 +1,14 @@
+language: python
+dist: xenial
+python: 3.7
+
+install:
+  - pip install pipenv
+  - pipenv install --dev
+
+script:
+  - pipenv run python -m pytest
+  - pipenv run flake8 app tests
+
+notifications:
+  email: false

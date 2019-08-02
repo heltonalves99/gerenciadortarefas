@@ -6,6 +6,8 @@ verify_ssl = true
 [dev-packages]
 httpie = "*"
 pytest = "*"
+pylint = "*"
+flake8 = "*"
 
 [packages]
 flask = "*"
