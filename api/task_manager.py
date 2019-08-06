@@ -12,6 +12,15 @@ def listar():
     return jsonify(sorted(TASKS, key=itemgetter("state")))
 
 
+@bp.route("/<int:id_task>/")
+def detail(id_task):
+    for task in TASKS:
+        if task["id"] == id_task:
+            return jsonify(task)
+
+    abort(404)
+
+
 @bp.route("/", methods=["POST"])
 def create():
     

@@ -69,6 +69,40 @@ def test_list_tasks_by_state(client):
     assert resp[0]["state"] is False
 
 
+def test_detail_task_exists(client):
+    """
+        should return detail of existent task.
+    """
+
+    TASKS.clear()
+    TASKS.append({
+        "id": 1,
+        "title": "my title 1",
+        "description": "my description 1",
+        "state": False,
+    })
+
+    resp = client.get("/todo/1/")
+    data = resp.json
+
+    assert resp.status_code == 200
+    assert data["title"] == "my title 1"
+    assert data["description"] == "my description 1"
+    assert data["state"] is False
+
+
+def test_detail_task_not_exists(client):
+    """
+        should return status code 404 if task does not exist.
+    """
+
+    TASKS.clear()
+    resp = client.get("/todo/1/")
+
+    assert resp.status_code == 404
+
+
+
 def test_create_task_accept_post(client):
     """
         should accept post request in create task.
