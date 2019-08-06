@@ -1,3 +1,5 @@
+from operator import itemgetter
+
 from flask import Blueprint, jsonify, request, abort
 
 bp = Blueprint("task_manager", __name__)
@@ -7,7 +9,7 @@ TASKS = []
 
 @bp.route("/")
 def listar():
-    return jsonify(TASKS)
+    return jsonify(sorted(TASKS, key=itemgetter("state")))
 
 
 @bp.route("/", methods=["POST"])

@@ -46,6 +46,29 @@ def test_list_tasks_return_not_empty_list(client):
     TASKS.clear()
 
 
+def test_list_tasks_by_state(client):
+    """
+        should return list of tasks sorted by state not done.
+    """
+
+    TASKS.clear()
+    TASKS.append({
+        "title": "my title 1",
+        "description": "my description 1",
+        "state": True,
+    })
+    TASKS.append({
+        "title": "my title 2",
+        "description": "my description 2",
+        "state": False,
+    })
+
+    resp = client.get("/todo/").json
+
+    assert resp[0]["title"] == "my title 2"
+    assert resp[0]["state"] is False
+
+
 def test_create_task_accept_post(client):
     """
         should accept post request in create task.
