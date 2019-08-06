@@ -28,3 +28,14 @@ def create():
     }
     TASKS.append(task)
     return jsonify(task), 201
+
+
+@bp.route("/<int:id_task>/", methods=["DELETE"])
+def delete(id_task):
+    task = [task for task in TASKS if task['id'] == id_task]
+
+    if not task:
+        abort(404)
+
+    TASKS.remove(task[0])
+    return "", 204

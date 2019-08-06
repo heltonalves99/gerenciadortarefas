@@ -159,3 +159,50 @@ def test_create_task_without_description(client):
     resp = client.post("/todo/", json=mock_data)
 
     assert resp.status_code == 400
+
+
+def test_delete_task_accept_delete(client):
+    """
+        should accept delete request.
+    """
+
+    resp = client.delete("/todo/1/")
+
+    assert resp.status_code != 405
+
+
+def test_delete_task_return_status_code_204(client):
+    """
+        should return status code 204 in delete task.
+    """
+
+    TASKS.clear()
+    TASKS.append({
+        "id": 1,
+        "title": "my title 1",
+        "description": "my description 1",
+        "state": True,
+    })
+
+    resp = client.delete("/todo/1/")
+
+    assert resp.status_code == 204
+    assert resp.data == b""
+
+
+def test_delete_task_remove_task_database(client):
+    """
+        should remove task from database.
+    """
+
+    TASKS.clear()
+    TASKS.append({
+        "id": 1,
+        "title": "my title 1",
+        "description": "my description 1",
+        "state": True,
+    })
+
+    client.delete("/todo/1/")
+
+    assert len(TASKS) == 0
