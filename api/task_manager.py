@@ -39,6 +39,38 @@ def create():
     return jsonify(task), 201
 
 
+@bp.route("/<int:id_task>/", methods=["PUT"])
+def update(id_task):
+    if not request.data:
+        abort(400)
+
+    task = {}
+    for item in TASKS:
+        if item["id"] == id_task:
+            task = item
+            break
+
+    if not task:
+        abort(404)
+
+    data = request.json
+    task["title"] = data.get("title", task["title"])
+    task["description"] = data.get("description", task["description"])
+    task["state"] = data.get("state", task["state"])
+
+    return jsonify(task)
+
+
+@bp.route("/<int:id_task>/done/", methods=["PUT"])
+def task_done(id_task):
+    for task in TASKS:
+        if task["id"] == id_task:
+            task["state"] = True
+            return "", 200
+
+    abort(404)
+
+
 @bp.route("/<int:id_task>/", methods=["DELETE"])
 def delete(id_task):
     task = [task for task in TASKS if task['id'] == id_task]

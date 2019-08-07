@@ -195,6 +195,52 @@ def test_create_task_without_description(client):
     assert resp.status_code == 400
 
 
+def test_update_task_exists(client):
+    """
+        should update an existent task.
+    """
+
+    TASKS.clear()
+    TASKS.append({
+        "id": 1,
+        "title": "my title 1",
+        "description": "my description 1",
+        "state": False,
+    })
+
+    mock_task = {
+        "title": "edited title",
+        "description": "edited description",
+        "state": True,
+    }
+
+    resp = client.put("/todo/1/", json=mock_task)
+    data = resp.json
+
+    assert resp.status_code == 200
+    assert data["id"] == 1
+    assert data["title"] == "edited title"
+    assert data["description"] == "edited description"
+    assert data["state"] is True
+
+
+def test_update_task_not_exists(client):
+    """
+        should return status code 404 if task does not exist.
+    """
+
+    TASKS.clear()
+    mock_task = {
+        "title": "edited title",
+        "description": "edited description",
+        "state": True,
+    }
+
+    resp = client.put("/todo/123/", json=mock_task)
+
+    assert resp.status_code == 404
+
+
 def test_delete_task_accept_delete(client):
     """
         should accept delete request.
@@ -240,3 +286,33 @@ def test_delete_task_remove_task_database(client):
     client.delete("/todo/1/")
 
     assert len(TASKS) == 0
+
+
+def test_state_task_done(client):
+    """
+        should set state task as done.
+    """
+
+    TASKS.clear()
+    TASKS.append({
+        "id": 1,
+        "title": "my title 1",
+        "description": "my description 1",
+        "state": False,
+    })
+
+    resp = client.put("/todo/1/done/")
+
+    assert resp.status_code == 200
+    assert resp.data == b""
+    assert TASKS[0]["state"] is True
+
+
+def test_state_task_done_does_not_exists(client):
+    """
+        should return status code 404 if task does not exist.
+    """
+
+    resp = client.put("/todo/123/done/")
+
+    assert resp.status_code == 404
